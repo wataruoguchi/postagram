@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { css } from "emotion";
 import Button from "./Button";
 import { v4 as uuid } from "uuid";
-import { Storage, API } from "aws-amplify";
+import { Storage, API, Auth } from "aws-amplify";
 import { createPost } from "./graphql/mutations";
 
 /* Initial state to hold form input, saving state */
@@ -66,8 +66,13 @@ export default function CreatePost({
       await API.graphql({
         query: createPost,
         variables: { input: postInfo },
-      });
-      updatePosts([...posts, { ...postInfo, image: formState.file }]);
+        authMode: "AMAZON_COGNITO_USER_POOLS",
+      }); // updated
+      const { username } = await Auth.currentAuthenticatedUser(); // new
+      updatePosts([
+        ...posts,
+        { ...postInfo, image: formState.file, owner: username },
+      ]); // updated
       updateFormState((currentState) => ({ ...currentState, saving: false }));
       updateOverlayVisibility(false);
     } catch (err) {

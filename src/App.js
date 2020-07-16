@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { HashRouter, Switch, Route } from "react-router-dom";
 import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
 import { css } from "emotion";
-import { API, Storage } from "aws-amplify";
+import { API, Storage, Auth } from "aws-amplify";
 import { listPosts } from "./graphql/queries";
 
 import Posts from "./Posts";
@@ -15,6 +15,7 @@ function Router() {
   /* create a couple of pieces of initial state */
   const [showOverlay, updateOverlayVisibility] = useState(false);
   const [posts, updatePosts] = useState([]);
+  const [myPosts, updateMyPosts] = useState([]);
 
   /* fetch posts when component loads */
   useEffect(() => {
@@ -39,6 +40,13 @@ function Router() {
     setPostState(postsArray);
   }
   async function setPostState(postsArray) {
+    const user = await Auth.currentAuthenticatedUser();
+    console.log({
+      username: user.username,
+      posts: postsArray,
+    });
+    const myPostData = postsArray.filter((p) => p.owner === user.username);
+    updateMyPosts(myPostData);
     updatePosts(postsArray);
   }
   return (
@@ -57,6 +65,9 @@ function Router() {
             </Route>
             <Route path="/post/:id">
               <Post />
+            </Route>
+            <Route exact path="/myposts">
+              <Posts posts={myPosts} />
             </Route>
           </Switch>
         </div>
