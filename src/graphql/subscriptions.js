@@ -12,6 +12,17 @@ export const onCreatePost = /* GraphQL */ `
       owner
       createdAt
       updatedAt
+      comments {
+        items {
+          id
+          message
+          owner
+          postID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -26,6 +37,17 @@ export const onUpdatePost = /* GraphQL */ `
       owner
       createdAt
       updatedAt
+      comments {
+        items {
+          id
+          message
+          owner
+          postID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -38,6 +60,53 @@ export const onDeletePost = /* GraphQL */ `
       description
       image
       owner
+      createdAt
+      updatedAt
+      comments {
+        items {
+          id
+          message
+          owner
+          postID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onCreateComment = /* GraphQL */ `
+  subscription OnCreateComment {
+    onCreateComment {
+      id
+      message
+      owner
+      postID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateComment = /* GraphQL */ `
+  subscription OnUpdateComment {
+    onUpdateComment {
+      id
+      message
+      owner
+      postID
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteComment = /* GraphQL */ `
+  subscription OnDeleteComment {
+    onDeleteComment {
+      id
+      message
+      owner
+      postID
       createdAt
       updatedAt
     }
